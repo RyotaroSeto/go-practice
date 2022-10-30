@@ -7,9 +7,34 @@ services:
       args:
         - target=dev
     environment:
-      TODO_ENV: dev
+      PRACTICE_ENV: dev
       PORT: 8080
+      PRACTICE_DB_HOST: practice-db
+      PRACTICE_DB_PORT: 3306
+      PRACTICE_DB_USER: practice
+      PRACTICE_DB_PASSWORD: practice
+      PRACTICE_DB_NAME: practice
     volumes:
       - .:/app
     ports:
       - "18000:8080"
+    links:
+      - practice-db
+
+  practice-db:
+    image: mysql:8.0.29
+    platform: linux/amd64
+    container_name: practice-db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: practice
+      MYSQL_PASSWORD: practice
+      MYSQL_DATABASE: practice
+    volumes:
+      - practice-db-data:/var/lib/mysql
+      - $PWD/_tools/mysql/conf.d:/etc/mysql/conf.d:cached
+    ports:
+      - "33306:3306"
+
+volumes:
+  practice-db-data:
